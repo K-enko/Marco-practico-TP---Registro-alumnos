@@ -13,18 +13,23 @@ struct student
 
 student students[100];
 int menu, menu1, count, ji, pos, aux_order_o;
-string sname, aux_name, aux_lastname;
+string sname;
+student students_aux[1];
+bool a = true;
+bool b = true;
 
-void load_data(struct student students[100], int &count);
-void order_view_data(struct student students[100], int ji, int &count);
-void search_student(struct student students[100], int menu1);
+void load_data(struct student students[100], int &count); //lee el txt y carga los datos si este no esta vacio
+void order_view_data(struct student students[100], int ji, int &count); //despliega menu de ordenamiento
+void search_student(struct student students[100], int menu1); 
 void search_for_name(int count, int ji, string sname);
 void search_for_lastname( int count, int ji, string sname);
-void order_for_name(struct student students[100], int ji, int pos, int &count, string aux_name, string aux_lastname, int aux_order_o);
-void oirder_for_lastname(struct student students[100], int ji, int pos, int &count, string aux_name, string aux_lastname, int aux_order_o);
-void order_for_origin(struct student students[100], int ji, int pos, int &count, string aux_name, string aux_lastname, int aux_order_o);
+void order_for_name(struct student students[100], int ji, int pos, int &count, struct student students_aux[1], bool &a, bool &b);
+void oirder_for_lastname(struct student students[100], int ji, int pos, int &count, struct student students_aux[1], bool &a, bool &b);
+void order_for_origin(struct student students[100], int ji, int pos, int &count, struct student students_aux[1]);
 void request_data(struct student students[100], int &count);
 void delate_student(struct student students[100], int ji, int &count, int menu1);
+void view_array(struct student students[100], int ji, int &count);
+void remplace_data(struct student students[100], int &count); //reemplaza el txt en cada momento que se precisa - codigo en el final
 
 int main()
 {
@@ -48,12 +53,12 @@ int main()
 	    {
 	    	case 1:
 
-	    	order_view_data(students, ji, count);
+	    	order_view_data(students, ji, count); // despliega menu de ordenamiento
 
 	    	break;
 	    	case 2:
 
-	    	search_student(students, menu1);
+	    	search_student(students, menu1); //despliega menu de busqueda
 
 	    	break;
 		    case 3:
@@ -66,7 +71,7 @@ int main()
 		    break;
 		    case 4:
 
-		    delate_student(students, ji,count, menu1);
+		    delate_student(students, ji,count, menu1); //elimina un alumno de la lista.
 
 		    break;
 		    case 0:
@@ -113,12 +118,7 @@ void load_data(struct student students[100], int &count)
 
 void order_view_data(struct student students[100], int ji, int &count)
 {
-	for (ji = 0; ji<count; ji++)
-	{
-		cout << students[ji].name << " " << students[ji].lastname << endl;
-	}
-
-	cout << endl;
+	view_array(students, ji, count); //muestra el arreglo en formato nombre - apellido, esta sobre el final del cpp
 
 	do
 	{
@@ -135,17 +135,17 @@ void order_view_data(struct student students[100], int ji, int &count)
 	    {
 	    	case 1:
 
-	    	order_for_name(students, ji, pos, count, aux_name, aux_lastname, aux_order_o);
+	    	order_for_name(students, ji, pos, count, students_aux, a, b);
 
 	    	break;
 	    	case 2:
 
-	    	oirder_for_lastname(students, ji, pos, count, aux_name, aux_lastname, aux_order_o);
+	    	oirder_for_lastname(students, ji, pos, count, students_aux, a, b);
 
 		    break;
 		    case 3:
 
-		    order_for_origin(students, ji, pos, count, aux_name, aux_lastname, aux_order_o);
+		    order_for_origin(students, ji, pos, count, students_aux);
 
 		    break;
 		    case 0:
@@ -157,97 +157,139 @@ void order_view_data(struct student students[100], int ji, int &count)
 	}while(menu1!=0);
 }
 
-void order_for_name(struct student students[100], int ji, int pos, int &count, string aux_name, string aux_lastname, int aux_order_o)
+void order_for_name(struct student students[100], int ji, int pos, int &count, struct student students_aux[1], bool &a, bool &b)
 {
-	for(ji=1; ji <count; ji++)
-	{
-		pos = ji;
+	b = true;
 
-		while((pos > 0) && (students[pos-1].name > students[pos].name))
+	if(a == true)
+	{
+		cout << "---------" << endl;
+		cout << "Acendente" << endl;
+		cout << "---------" << endl;
+		cout << endl;
+
+		for(ji=1; ji <count; ji++)
 		{
-			aux_name = students[pos].name;
-			aux_lastname = students[pos].lastname;
-			aux_order_o = students[pos].order_original;
+			pos = ji;
 
-			students[pos].name = students[pos-1].name;
-			students[pos].lastname = students[pos-1].lastname;
-			students[pos] = students[pos-1];
+		    while((pos > 0) && (students[pos-1].name > students[pos].name))
+		    {
+			    students_aux[1] = students[pos];
 
-			students[pos-1].name = aux_name;
-			students[pos-1].lastname = aux_lastname;
-			students[pos-1].order_original = aux_order_o;
+			    students[pos] = students[pos-1];
 
-			pos--;
-		}
+			    students[pos-1] = students_aux[1];
+
+			    pos--;
+		    }
+	    }
+
+	    remplace_data(students, count); //reemplaza txt, funcion al final del cpp
+
+	    view_array(students, ji, count); //muestra el arreglo, sobre el final del cpp
+
+	    a = false;
+	    cout << endl;
 	}
-
-	ofstream oup_file;
-	oup_file.open("students.txt", ios::out);
-	if(oup_file.is_open())
+	else
 	{
-		for(ji=0; ji<count ; ji++)
+		cout << "----------" << endl;
+		cout << "Decendente" << endl;
+		cout << "----------" << endl;
+		cout << endl;
+
+		for(ji=1; ji <count; ji++)
 		{
-			oup_file << students[ji].name << endl;
-			oup_file << students[ji].lastname << endl;
-			oup_file << students[ji].order_original << endl;
-		}
-	}
-	oup_file.close();
+			pos = ji;
 
-	for (ji = 0; ji<count; ji++)
-	{
-		cout << students[ji].name << " " << students[ji].lastname << endl;
-	}
+		    while((pos > 0) && (students[pos-1].name < students[pos].name))
+		    {
+			    students_aux[1] = students[pos];
 
-	cout << endl;
+			    students[pos] = students[pos-1];
+
+			    students[pos-1] = students_aux[1];
+
+			    pos--;
+		    }
+	    }
+
+	    remplace_data(students, count); //reemplaza txt, funcion al final del cpp
+
+	    view_array(students, ji, count);
+
+	    a = true;
+	    cout << endl;
+	}
 }
 
-void oirder_for_lastname(struct student students[100], int ji, int pos, int &count, string aux_name, string aux_lastname, int aux_order_o)
+void oirder_for_lastname(struct student students[100], int ji, int pos, int &count, struct student students_aux[1], bool &a, bool &b)
 {
-	for(ji=1; ji <count; ji++)
+	a = true;
+
+	if(b == true)
 	{
-		pos = ji;
+		cout << "---------" << endl;
+		cout << "Acendente" << endl;
+		cout << "---------" << endl;
+		cout << endl;
 
-		while((pos > 0) && (students[pos-1].lastname > students[pos].lastname))
-		{
-			aux_name = students[pos].name;
-			aux_lastname = students[pos].lastname;
-			aux_order_o = students[pos].order_original;
+		for(ji=1; ji <count; ji++)
+	    {
+		    pos = ji;
 
-			students[pos].name = students[pos-1].name;
-			students[pos].lastname = students[pos-1].lastname;
-			students[pos] = students[pos-1];
+		    while((pos > 0) && (students[pos-1].lastname > students[pos].lastname))
+		    {
+			    students_aux[1] = students[pos];
 
-			students[pos-1].name = aux_name;
-			students[pos-1].lastname = aux_lastname;
-			students[pos-1].order_original = aux_order_o;
+			    students[pos] = students[pos-1];
 
-			pos--;
-		}
+			    students[pos-1] = students_aux[1];
+
+			    pos--;
+		    }
+	    }
+
+	    remplace_data(students, count);
+
+	    view_array(students, ji, count);
+
+	    b = false;
+	    cout << endl;
 	}
-
-	ofstream oup_file;
-	oup_file.open("students.txt", ios::out);
-	if(oup_file.is_open())
+	else
 	{
-		for(ji=0; ji<count ; ji++)
-		{
-			oup_file << students[ji].name << endl;
-			oup_file << students[ji].lastname << endl;
-			oup_file << students[ji].order_original << endl;
-		}
-	}
-	oup_file.close();
+		cout << "----------" << endl;
+		cout << "Decendente" << endl;
+		cout << "----------" << endl;
+		cout << endl;
 
-	for (ji = 0; ji<count; ji++)
-	{
-		cout << students[ji].lastname << " " << students[ji].name << endl;
-	}
+		for(ji=1; ji <count; ji++)
+	    {
+		    pos = ji;
 
-	cout << endl;
+		    while((pos > 0) && (students[pos-1].lastname < students[pos].lastname))
+		    {
+			    students_aux[1] = students[pos];
+
+			    students[pos] = students[pos-1];
+
+			    students[pos-1] = students_aux[1];
+
+			    pos--;
+		    }
+	    }
+
+	    remplace_data(students, count);
+
+	    view_array(students, ji, count);
+
+	    b = true;
+	    cout << endl;
+	}
 }
 
-void order_for_origin(struct student students[100], int ji, int pos, int &count, string aux_name, string aux_lastname, int aux_order_o)
+void order_for_origin(struct student students[100], int ji, int pos, int &count, struct student students_aux[1])
 {
 	for(ji=1; ji <count; ji++)
 	{
@@ -255,39 +297,19 @@ void order_for_origin(struct student students[100], int ji, int pos, int &count,
 
 		while((pos > 0) && (students[pos-1].order_original > students[pos].order_original))
 		{
-			aux_name = students[pos].name;
-			aux_lastname = students[pos].lastname;
-			aux_order_o = students[pos].order_original;
+			students_aux[1] = students[pos];
 
-			students[pos].name = students[pos-1].name;
-			students[pos].lastname = students[pos-1].lastname;
 			students[pos] = students[pos-1];
 
-			students[pos-1].name = aux_name;
-			students[pos-1].lastname = aux_lastname;
-			students[pos-1].order_original = aux_order_o;
+			students[pos-1] = students_aux[1];
 
 			pos--;
 		}
 	}
 
-	ofstream oup_file;
-	oup_file.open("students.txt", ios::out);
-	if(oup_file.is_open())
-	{
-		for(ji=0; ji<count ; ji++)
-		{
-			oup_file << students[ji].name << endl;
-			oup_file << students[ji].lastname << endl;
-			oup_file << students[ji].order_original << endl;
-		}
-	}
-	oup_file.close();
+	remplace_data(students, count);
 
-	for (ji = 0; ji<count; ji++)
-	{
-		cout << students[ji].order_original << ". " << students[ji].name << " " << students[ji].lastname << endl;
-	}
+	view_array(students, ji, count);
 
 	cout << endl;
 }
@@ -428,7 +450,29 @@ void delate_student(struct student students[100], int ji, int &count, int menu1)
 		students[ji].order_original = students[ji+1].order_original;
 	}
 	count--;
+	cout << endl;
 
+	remplace_data(students, count);
+	
+	view_array(students, ji, count);
+
+	cout << endl;
+	cout << "El alumno se elimino exitosamente..." << endl;
+	cout << endl;
+	cin.get();
+}
+
+void view_array(struct student students[100], int ji, int &count)
+{
+	for (ji = 0; ji<count; ji++)
+	{
+		cout << students[ji].name << " " << students[ji].lastname << endl;
+	}
+	cout << endl;
+}
+
+void remplace_data(struct student students[100], int &count)
+{
 	ofstream oup_file;
 	oup_file.open("students.txt", ios::out);
 	if(oup_file.is_open())
@@ -441,14 +485,4 @@ void delate_student(struct student students[100], int ji, int &count, int menu1)
 		}
 	}
 	oup_file.close();
-
-	for (ji = 0; ji<count; ji++)
-	{
-		cout << ji << ". " << students[ji].name << " " << students[ji].lastname << endl;
-	}
-
-	cout << endl;
-	cout << "El alumno se elimino exitosamente..." << endl;
-	cout << endl;
-	cin.get();
 }
