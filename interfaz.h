@@ -1,5 +1,5 @@
-#define x
-#ifndef x
+#ifndef intefaz_h
+#define intefaz_h
 
 #include <string>
 

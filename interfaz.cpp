@@ -1,12 +1,10 @@
-#define x
-#ifndef x
+#ifndef intefaz_cpp
+#define intefaz_cpp
 
 #include <iostream>
 #include <fstream>
 #include <string>
 using namespace std;
-
-#include "interfaz.h"
 
 #endif
 

@@ -1,5 +1,5 @@
-#define x
-#ifndef x
+#ifndef StRegister_cpp
+#define StRegister_cpp
 
 #include <iostream>
 using namespace std;
