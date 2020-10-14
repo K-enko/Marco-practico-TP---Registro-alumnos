@@ -1,12 +1,9 @@
-#ifndef intefaz_cpp
-#define intefaz_cpp
-
 #include <iostream>
-#include <fstream>
 #include <string>
+#include <fstream>
 using namespace std;
 
-#endif
+#include "interfaz.h"
 
 void load_data(struct student students[100], int &count)
 {
@@ -63,7 +60,7 @@ void order_view_data(struct student students[100], int ji, int &count)
 		    break;
 		    case 3:
 
-		    order_for_origin(students, ji, pos, count, students_aux);
+		    order_for_origin(students, ji, pos, count, students_aux, a, b);
 
 		    break;
 		    case 0:
@@ -207,8 +204,11 @@ void oirder_for_lastname(struct student students[100], int ji, int pos, int &cou
 	}
 }
 
-void order_for_origin(struct student students[100], int ji, int pos, int &count, struct student students_aux[1])
+void order_for_origin(struct student students[100], int ji, int pos, int &count, struct student students_aux[1], bool &a, bool &b)
 {
+	a = true;
+	b = true;
+
 	for(ji=1; ji <count; ji++)
 	{
 		pos = ji;

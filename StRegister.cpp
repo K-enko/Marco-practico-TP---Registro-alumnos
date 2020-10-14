@@ -1,12 +1,9 @@
-#ifndef StRegister_cpp
-#define StRegister_cpp
-
 #include <iostream>
+#include <string>
+#include <fstream>
 using namespace std;
 
 #include "interfaz.h"
-
-#endif
 
 int main()
 {
